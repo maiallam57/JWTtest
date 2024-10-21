@@ -122,18 +122,18 @@ namespace JWTtest.Services
 
         public async Task<string> AddRoleAsync(AddRoleModel model)
         {
-            var user = await _userManager.FindByIdAsync(model.User_Id);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if(user is null || !await _roleManager.RoleExistsAsync(model.Role))
             {
-                return "Invalid User ID or role!";
+                return "Invalid User Email or role!";
             }
             if(await _userManager.IsInRoleAsync(user,model.Role))
             {
-                return "user is Allready Assigned to This Role";
+                return "user is Already Assigned to This Role";
             }
             var result = await _userManager.AddToRoleAsync(user, model.Role);
 
-            return result.Succeeded ? string.Empty : "something Went Wrong";
+            return result.Succeeded ? string.Empty : "Something Went Wrong";
         }
     }
 }

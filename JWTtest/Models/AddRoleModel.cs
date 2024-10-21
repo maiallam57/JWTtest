@@ -5,7 +5,7 @@ namespace JWTtest.Models
     public class AddRoleModel
     {
         [Required]
-        public string User_Id { get; set; }
+        public string Email { get; set; }
         [Required]
 
         public string Role { get; set; }
