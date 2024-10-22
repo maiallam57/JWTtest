@@ -44,14 +44,13 @@ namespace JWTtest.Controllers
             {
                 return BadRequest(result.Message);
             }
-            return Ok(new
-            {
-                token = result.Token,
-                expireson = result.ExpiresOn,
-                user_Email = result.Email,
-                user_name = result.UserName
-            });
+
+            // Redirect back to App 2 with the JWT token as a query parameter
+            string redirectUrl = $"https://localhost:7118/api/SecureData/login?token={result.Token}";
+            return Redirect(redirectUrl);
         }
+
+
         [HttpPost("AddRole")]
         public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleModel model)
         {

@@ -37,10 +37,11 @@ namespace JWTtest
         {
             services.Configure<JWT>(Configuration.GetSection(nameof(JWT)));
             services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+
             services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultCon"));
-            });
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultCon"),
+            sqlOptions => sqlOptions.EnableRetryOnFailure()));
+
             services.AddScoped<IAuthServices,AuthServices>();
 
             services.AddAuthentication(options =>
@@ -63,6 +64,16 @@ namespace JWTtest
                 };
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowApp2", builder =>
+                {
+                    builder.WithOrigins("https://localhost:7118") // App 2 URL
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -73,20 +84,19 @@ namespace JWTtest
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("AllowApp2");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "JWTtest v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "JWTtest API v1"));
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
