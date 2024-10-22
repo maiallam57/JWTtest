@@ -28,9 +28,33 @@ namespace JWTtest.Controllers
             {
                 return BadRequest(result.Message);
             }
+
             return Ok(new {token = result.Token , expireson = result.ExpiresOn ,
                 user_Email = result.Email , user_name = result.UserName});
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync([FromBody] TokenRequestModel model)
+        {
+            // Validate the model
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Call the authentication service to log in the user
+            var result = await _authServices.LoginAsync(model);
+
+            // Check if authentication was successful
+            if (!result.IsAuthenticated)
+            {
+                return BadRequest(result.Message); // Return error message
+            }
+
+            // If successful, return the token and user details
+            return Ok(result.Token);
+        }
+
 
         [HttpPost("Token")]
         public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)

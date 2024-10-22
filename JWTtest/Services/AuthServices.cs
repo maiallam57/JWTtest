@@ -30,10 +30,10 @@ namespace JWTtest.Services
         async Task<AuthModel> IAuthServices.RegisteraAsync(RegisterModel model)
         {
             if (await _userManager.FindByEmailAsync(model.Email) is not null)
-            return new AuthModel { Message = "Email Is Allready Registered" };
+            return new AuthModel { Message = "Email Is Already Registered" };
 
             if (await _userManager.FindByNameAsync(model.UserName) is not null)
-                return new AuthModel { Message = "UserName Is Allready Registered" };
+                return new AuthModel { Message = "UserName Is Already Registered" };
 
             var user = new ApplicationUser
             {
@@ -66,6 +66,37 @@ namespace JWTtest.Services
                 UserName = user.UserName
             };
         }
+        public async Task<AuthModel> LoginAsync(TokenRequestModel model)
+        {
+            // Find the user by email
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return new AuthModel { Message = "Invalid email or password." };
+            }
+
+            // Check if the password is correct
+            var result = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (!result)
+            {
+                return new AuthModel { Message = "Invalid email or password." };
+            }
+
+            // Create the JWT token
+            var jwtSecurityToken = await CreateJwtToken(user);
+
+            return new AuthModel
+            {
+                Email = user.Email,
+                ExpiresOn = jwtSecurityToken.ValidTo,
+                IsAuthenticated = true,
+                Roles = new List<string> { "user" },
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                UserName = user.UserName
+            };
+        }
+
+
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
