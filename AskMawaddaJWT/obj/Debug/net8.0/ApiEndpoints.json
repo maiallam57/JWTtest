@@ -1,0 +1,39 @@
+[
+  {
+    "ContainingType": "AskMawaddaJWT.Controllers.SecureDataController",
+    "Method": "Login",
+    "RelativePath": "api/SecureData/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Password",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AskMawaddaJWT.Controllers.SecureDataController",
+    "Method": "RedirectToRegister",
+    "RelativePath": "api/SecureData/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "AskMawaddaJWT.Models.RegisterModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

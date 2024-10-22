@@ -1,0 +1,6 @@
+@AskMawaddaJWT_HostAddress = http://localhost:5031
+
+GET {{AskMawaddaJWT_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
