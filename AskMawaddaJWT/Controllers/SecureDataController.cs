@@ -70,7 +70,8 @@ public class SecureDataController : ControllerBase
         }
     }
 
-    private IActionResult GetProtectedData()
+    [HttpGet]
+    public IActionResult GetProtectedData()
     {
         var token = HttpContext.Request.Cookies["JWTToken"];
 
